@@ -1,5 +1,6 @@
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconly/iconly.dart';
 
 enum _SelectedTab { Home, Favorite, Add, Search, Person }
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   var _selectedTab = _SelectedTab.Home;
 
   void _handleIndexChanged(int i) {
@@ -35,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -46,70 +49,66 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        // TODO: ADD LOGO TO LEADING
-        leading: Container(
-          color: Colors.redAccent,
+        leading: GestureDetector(
+          onTap: () {
+            scaffoldKey.currentState?.openDrawer();
+          },
+          child: Container(
+            margin: const EdgeInsets.only(left: 15),
+            color: Theme.of(context).appBarTheme.backgroundColor,
+            child: SvgPicture.asset(
+              'assets/images/logo/logo.svg',
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.9), BlendMode.srcATop),
+              fit: BoxFit.scaleDown,
+            ),
+          ),
         ),
-        actions: [CircleAvatar(backgroundColor: Colors.redAccent)],
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: GestureDetector(
+              onTap: () {
+                scaffoldKey.currentState?.openEndDrawer();
+              },
+              child: const CircleAvatar(
+                backgroundColor: Colors.redAccent,
+              ),
+            ),
+          ),
+        ],
       ),
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: _pages,
       ),
+      endDrawer: const Drawer(),
+      drawer: const Drawer(),
       extendBody: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Container(
-        child: FittedBox(
-          child: Stack(
-            alignment: Alignment(1.6, -1.5),
-            children: [
-              FloatingActionButton(
-                // Your actual Fab
-                onPressed: () {},
-                elevation: 0,
-                tooltip: 'Increment',
-                child: const Icon(IconlyBold.chat, size: 30),
-                backgroundColor: Theme.of(context)
-                    .floatingActionButtonTheme
-                    .backgroundColor!
-                    .withBlue(160)
-                    .withOpacity(0.75),
-              ),
-              Container(
-                // This is your Badge
-                child: Center(
-                  // Here you can put whatever content you want inside your Badge
-                  child: Text('4', style: TextStyle(color: Colors.white)),
-                ),
-                constraints: BoxConstraints(minHeight: 26, minWidth: 26),
-                decoration: BoxDecoration(
-                  // This controls the shadow
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.redAccent, // This would be color of the Badge
-                ),
-              ),
-            ],
+      floatingActionButton: FittedBox(
+        child: Badge(
+          label: const Text('4'),
+          backgroundColor: Colors.redAccent,
+          padding: const EdgeInsets.all(2),
+          child: FloatingActionButton(
+            // Your actual Fab
+            focusElevation: 0,
+            highlightElevation: 0,
+            hoverElevation: 0,
+            onPressed: () {},
+            elevation: 0,
+            tooltip: 'Chat',
+            backgroundColor: Theme.of(context)
+                .floatingActionButtonTheme
+                .backgroundColor!
+                .withBlue(160)
+                .withOpacity(0.75),
+            child: const Icon(IconlyBold.chat, size: 30),
           ),
         ),
       ),
-      // FloatingActionButton(
-      //   onPressed: () {
-      //     // Navigator.of(context).push(
-      //     //   MaterialPageRoute(
-      //     //     builder: (context) => const HomePage(),
-      //     //   ),
-      //     // );
-      //   },
-      //   elevation: 0,
-      //   tooltip: 'Increment',
-      //   child: const Icon(IconlyBold.chat, size: 30),
-      //   backgroundColor: Theme.of(context)
-      //       .floatingActionButtonTheme
-      //       .backgroundColor!
-      //       .withBlue(160)
-      //       .withOpacity(0.75),
-      // ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(bottom: 0),
         child: CrystalNavigationBar(
@@ -119,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           unselectedItemColor: Colors.black54,
           backgroundColor:
               Theme.of(context).colorScheme.inversePrimary.withOpacity(0.2),
-          paddingR: const EdgeInsets.symmetric(horizontal: 10),
+          paddingR: const EdgeInsets.symmetric(horizontal: 20),
           marginR: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           onTap: _handleIndexChanged,
           enableFloatingNavBar: true,

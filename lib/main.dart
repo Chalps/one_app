@@ -22,8 +22,13 @@ class MyApp extends StatelessWidget {
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.yellow,
         ),
+        // badgeTheme: const BadgeThemeData(
+        //   shape: BadgeShape.circle,
+        //   badgeColor: Colors.yellow,
+        //   badgeTextColor: Colors.black,
+        // ),
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       home: const HomePage(),
     );
   }
